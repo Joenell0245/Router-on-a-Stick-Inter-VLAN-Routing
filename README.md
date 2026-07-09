@@ -6,7 +6,7 @@ Route between three VLANs spread across a chain of access switches, using a sing
 
 ## Topology
 
-![Topology](./roas.png)
+![Topology](./topology.png)
 
 - **Router0** (Cisco 2911) — single trunk link down to Switch5, no routing done anywhere else
 - **Switch5 → Switch6 → Switch7** — three 2960-24TT access switches daisy-chained by trunk links, carrying all three VLANs end-to-end
