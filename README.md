@@ -74,4 +74,4 @@ show ip route
 
 ## Configs
 
-See [`/configs`](./configs) for the reconstructed device configurations (Router0, Switch5, Switch6, Switch7).
+See [`/configs`](./Configs) for the reconstructed device configurations (Router0, Switch5, Switch6, Switch7).
