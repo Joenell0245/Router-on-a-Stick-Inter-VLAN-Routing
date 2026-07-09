@@ -1,0 +1,184 @@
+! ================================================
+! Router0 (Cisco 2911) - Router-on-a-Stick
+! ================================================
+
+hostname Router0
+
+interface GigabitEthernet0/0
+ no shutdown
+ no ip address
+!
+interface GigabitEthernet0/0.10
+ encapsulation dot1Q 10
+ ip address 172.0.0.30 255.255.255.224
+!
+interface GigabitEthernet0/0.20
+ encapsulation dot1Q 20
+ ip address 172.0.0.62 255.255.255.224
+!
+interface GigabitEthernet0/0.30
+ encapsulation dot1Q 30
+ ip address 172.0.0.94 255.255.255.224
+
+end
+
+
+! ================================================
+! Switch5 (2960-24TT) - Connects directly to Router0
+! ================================================
+
+hostname Switch5
+
+vlan 10
+ name IT_DEPT
+vlan 20
+ name ADMIN
+vlan 30
+ name SALES
+
+! --- Trunk up to Router0 ---
+interface FastEthernet0/1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+
+! --- Trunk onward to Switch6 (carries all VLANs down the chain) ---
+interface FastEthernet0/2
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+
+! --- Access ports: VLAN 10 (IT_DEPT) - PC0, PC3 ---
+interface FastEthernet0/3
+ description PC0 - IT_DEPT
+ switchport mode access
+ switchport access vlan 10
+!
+interface FastEthernet0/4
+ description PC3 - IT_DEPT
+ switchport mode access
+ switchport access vlan 10
+
+! --- Access port: VLAN 30 (SALES) - PC1 ---
+interface FastEthernet0/5
+ description PC1 - SALES
+ switchport mode access
+ switchport access vlan 30
+
+! --- Access ports: VLAN 20 (ADMIN) - PC4, PC2 ---
+interface FastEthernet0/6
+ description PC4 - ADMIN
+ switchport mode access
+ switchport access vlan 20
+!
+interface FastEthernet0/7
+ description PC2 - ADMIN
+ switchport mode access
+ switchport access vlan 20
+
+end
+
+
+! ================================================
+! Switch6 (2960-24TT) - Middle switch in the chain
+! ================================================
+
+hostname Switch6
+
+vlan 10
+ name IT_DEPT
+vlan 20
+ name ADMIN
+vlan 30
+ name SALES
+
+! --- Trunk back to Switch5 ---
+interface FastEthernet0/1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+
+! --- Trunk onward to Switch7 ---
+interface FastEthernet0/2
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+
+! --- Access ports: VLAN 20 (ADMIN) - Laptop2, PC5, Laptop0 ---
+interface FastEthernet0/3
+ description Laptop2 - ADMIN
+ switchport mode access
+ switchport access vlan 20
+!
+interface FastEthernet0/4
+ description PC5 - ADMIN
+ switchport mode access
+ switchport access vlan 20
+!
+interface FastEthernet0/5
+ description Laptop0 - ADMIN
+ switchport mode access
+ switchport access vlan 20
+
+! --- Access ports: VLAN 30 (SALES) - PC6, Laptop1, Laptop5 ---
+interface FastEthernet0/6
+ description PC6 - SALES
+ switchport mode access
+ switchport access vlan 30
+!
+interface FastEthernet0/7
+ description Laptop1 - SALES
+ switchport mode access
+ switchport access vlan 30
+!
+interface FastEthernet0/8
+ description Laptop5 - SALES
+ switchport mode access
+ switchport access vlan 30
+
+end
+
+
+! ================================================
+! Switch7 (2960-24TT) - End of the chain
+! ================================================
+
+hostname Switch7
+
+vlan 10
+ name IT_DEPT
+vlan 20
+ name ADMIN
+vlan 30
+ name SALES
+
+! --- Trunk back to Switch6 ---
+interface FastEthernet0/1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+
+! --- Access port: VLAN 10 (IT_DEPT) - Laptop3 ---
+interface FastEthernet0/2
+ description Laptop3 - IT_DEPT
+ switchport mode access
+ switchport access vlan 10
+
+! --- Access ports: VLAN 20 (ADMIN) - PC9, PC8 ---
+interface FastEthernet0/3
+ description PC9 - ADMIN
+ switchport mode access
+ switchport access vlan 20
+!
+interface FastEthernet0/4
+ description PC8 - ADMIN
+ switchport mode access
+ switchport access vlan 20
+
+! --- Access ports: VLAN 30 (SALES) - PC7, Laptop4 ---
+interface FastEthernet0/5
+ description PC7 - SALES
+ switchport mode access
+ switchport access vlan 30
+!
+interface FastEthernet0/6
+ description Laptop4 - SALES
+ switchport mode access
+ switchport access vlan 30
+
+end
